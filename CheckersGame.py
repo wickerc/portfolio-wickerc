@@ -2,7 +2,7 @@
 # GitHub username: wickerc
 # Date: 03/06/2023
 # Description: A class called Checkers that allows two people to play the game of Checkers. This is a variation of the
-# original Checkers game with modified rules.
+# original Checkers game with modified rules
 
 
 class OutofTurn(Exception):
