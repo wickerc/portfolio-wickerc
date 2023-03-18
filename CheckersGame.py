@@ -153,19 +153,16 @@ class Checkers:
                                                     destination_list[1]:
                                                 if (current_color == "Black" and self._board[current_row][current_col] == "White" ) or ( \
                                                         current_color == "White" and self._board[current_row][current_col] == "Black"):
-                                                    print(self._board[current_row][current_col])
                                                     current_player.increase_captured_piece_count(1)
                                                 if (current_color == "Black" and self._board[current_row][
                                                     current_col] == "White_king") or (current_color == "White" and self._board[current_row][
                                                             current_col] == "Black_king"):
-                                                    print(self._board[current_row][current_col])
                                                     current_player.increase_captured_piece_count(2)
                                                 if starting_square != self._board[current_row][current_col] and \
                                                         (current_color == "Black" and self._board[current_row][
                                                     current_col] == "White_Triple_King") or (
                                                         current_color == "White" and self._board[current_row][
                                                     current_col] == "Black_Triple_King"):
-                                                    print(self._board[current_row][current_col])
                                                     current_player.increase_captured_piece_count(3)
                                                 self._board[current_row][current_col] = None
                                                 current_row += row_step
@@ -176,11 +173,11 @@ class Checkers:
                                                         (starting_list[1] + destination_list[1]) % 2 == 0:
                                                     jumped_0 = int((starting_list[0] + destination_list[0]) / 2)
                                                     jumped_1 = int((starting_list[1] + destination_list[1]) / 2)
-                                                    if self._board[jumped_0][jumped_1] != current_color and not None:    # checks if jumped piece is the opponent's
+                                                    if (self._board[jumped_0][jumped_1] != current_color) and (self._board[jumped_0][jumped_1] is not None): # checks if jumped piece is the opponent's
                                                         current_player.increase_captured_piece_count(1)  # increases current's captures piece count by 1
-                                                        if "king" or "King" in self._board[jumped_0][jumped_1]:   # checks if jumped piece is at least a king
+                                                        if self._board[jumped_0][jumped_1] == "White_king" or "Black_king":   # checks if jumped piece is at least a king
                                                             current_player.increase_captured_piece_count(1)   # increases current captures by 1 if above condition met
-                                                            if "Triple" in self._board[jumped_0][jumped_1]:    # checks if jumped piece is a triple king
+                                                            if self._board[jumped_0][jumped_1] == "White_Triple_King" or "Black_Triple_King":    # checks if jumped piece is a triple king
                                                                 current_player.increase_captured_piece_count(1)  # increases current captures by 3 for a total of 3 captures in one move if above condition is met
                                                     self._board[jumped_0][jumped_1] = None  # sets jumped location to None
                                             self._board[destination_list[0]][
@@ -200,12 +197,36 @@ class Checkers:
         except InvalidSquare:
             print("InvalidSquare Error: You attempted to move to or from an invalid square")
 
-    # def get_checker_details(self):
+    def get_checker_details(self, square_location):
+        """takes as a parameter a square_location on the board and returns the checker details present in the
+        square_location"""
+        try:
+            square_location_list = list(square_location)    # turns starting tuple coordinates into a list to iterate through easier
+            for x in square_location_list:
+                if x < 0 or x > 7:
+                    raise InvalidSquare           # raises error if player tries to move a piece from out of bounds
+        except InvalidSquare:
+            print("InvalidSquare Error: This is not a location on the board")
+
+        square_details = self._board[square_location_list[0]][square_location_list[1]]
+        return square_details
+
+    def get_board(self):
+        """returns the current board in the form of an array"""
+        return self._board
 
     def print_board(self):
+        """prints the current board in the form of an array"""
         print(self._board)
 
-    # def game_winner(self):
+    def game_winner(self):
+        """returns the name of the player who won the game or "Game has not ended" if the game is not over yet"""
+        if Player1.get_captured_pieces_count() == 12:
+            return Player1.get_player_name()
+        if Player2.get_captured_pieces_count() == 12:
+            return Player2.get_player_name()
+        if Player1.get_captured_pieces_count() < 12 and Player2.get_captured_pieces_count() < 12:
+            return "Game has not ended"
 
 
 class Player:
@@ -230,9 +251,13 @@ class Player:
         """returns the color of pieces that a player is using"""
         return self._piece_color
 
-    # def get_king_count(self):
+    def get_king_count(self):
+        """returns the number of king pieces that a player has"""
+        print(Checkers().get_checker_details((0, 3)))
 
-    # def get_triple_king_count(self):
+
+    #def get_triple_king_count(self):
+        """returns the number of triple king pieces that a player has"""
 
     def get_captured_pieces_count(self):
         return self._captured_pieces_count
@@ -245,6 +270,7 @@ Player2 = game.create_player("Jack", "White")
 
 print(game.play_game("Lucy", (7, 6), (4, 0)))
 print(game.play_game("Jack", (0, 1), (7, 6)))
-print(game.play_game("Lucy", (5, 0), (4, 1)))
-print(game.play_game("Jack", (7, 6), (4, 3)))
+
 game.print_board()
+print(Player1.get_captured_pieces_count())
+print(Player2.get_king_count())
