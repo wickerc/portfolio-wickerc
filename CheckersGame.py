@@ -57,6 +57,7 @@ class Checkers:
         except InvalidSquare:
             print("InvalidSquare Error: You attempted to move from a square on the board that doesn't exist")
 
+        starting_list = list(starting_square_location)
         starting_square = self._board[starting_list[0]][starting_list[1]]
         # assigns variable to the starting location on the board
 
@@ -69,6 +70,7 @@ class Checkers:
         except InvalidSquare:
             print("InvalidSquare Error: You attempted to move to a square on the board that doesn't exist")
 
+        destination_list = list(destination_square_location)
         destination_square = self._board[destination_list[0]][destination_list[1]]
         # assigns a variable to the destination square
 
@@ -184,7 +186,7 @@ class Checkers:
                                                         (current_color == "Black" and self._board[current_row][
                                                             current_col] == "White_Triple_King") or (
                                                         current_color == "White" and self._board[current_row][
-                                                    current_col] == "Black_Triple_King"):
+                                                        current_col] == "Black_Triple_King"):
                                                     current_player.increase_captured_piece_count(3)
                                                 self._board[current_row][current_col] = None
                                                 current_row += row_step
@@ -209,7 +211,7 @@ class Checkers:
                                                                 1)
                                                             # increases current captures by 1 if above condition met
                                                             if self._board[jumped_0][
-                                                                    jumped_1] == "White_Triple_King" or \
+                                                                jumped_1] == "White_Triple_King" or \
                                                                     "Black_Triple_King":
                                                                 # checks if jumped piece is a triple king
                                                                 current_player.increase_captured_piece_count(
@@ -250,6 +252,7 @@ class Checkers:
         except InvalidSquare:
             print("InvalidSquare Error: This is not a location on the board")
 
+        square_location_list = list(square_location)
         square_details = self._board[square_location_list[0]][square_location_list[1]]
         return square_details
 
@@ -263,12 +266,11 @@ class Checkers:
 
     def game_winner(self):
         """returns the name of the player who won the game or "Game has not ended" if the game is not over yet"""
-        if Player1.get_captured_pieces_count() == 12:
-            return Player1.get_player_name()
-        if Player2.get_captured_pieces_count() == 12:
-            return Player2.get_player_name()
-        if Player1.get_captured_pieces_count() < 12 and Player2.get_captured_pieces_count() < 12:
-            return "Game has not ended"
+        for player in self._player_objects:
+            if player.get_captured_pieces_count() == 12:
+                return player.get_player_name
+            else:
+                return "Game has not ended"
 
 
 class Player:
@@ -314,3 +316,19 @@ class Player:
     def get_captured_pieces_count(self):
         return self._captured_pieces_count
 
+
+game = Checkers()
+
+Player1 = game.create_player("Adam", "White")
+
+Player2 = game.create_player("Lucy", "Black")
+
+print(game.play_game("Lucy", (5, 6), (4, 7)))
+
+print(game.play_game("Adam", (2, 1), (3, 0)))
+
+print(game.get_checker_details((3, 1)))
+
+print(Player1.get_captured_pieces_count())
+
+print(game.game_winner())
