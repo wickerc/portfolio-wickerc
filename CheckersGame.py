@@ -1,3 +1,9 @@
+# Author: Carolynn Wicker
+# GitHub username: wickerc
+# Date: 03/18/2023
+# Description: A class called Checkers that allows two people to play the game of Checkers and a class called Player
+# that creates a player object in the game. This is a variation of the original Checkers game with modified rules.
+
 class OutofTurn(Exception):
     """user-defined exception for if a player tries to move when it is not their turn"""
     pass
@@ -317,18 +323,4 @@ class Player:
         return self._captured_pieces_count
 
 
-game = Checkers()
 
-Player1 = game.create_player("Adam", "White")
-
-Player2 = game.create_player("Lucy", "Black")
-
-print(game.play_game("Lucy", (5, 6), (4, 7)))
-
-print(game.play_game("Adam", (2, 1), (3, 0)))
-
-print(game.get_checker_details((3, 1)))
-
-print(Player1.get_captured_pieces_count())
-
-print(game.game_winner())
