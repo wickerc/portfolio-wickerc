@@ -29,7 +29,7 @@ class CheckersTests(unittest.TestCase):
         self.assertEqual("Carolynn", new_game.get_players_turn())
 
     def test_3(self):
-        """Tests play_game and get_checker_details methods to make board reflects recent move"""
+        """Tests play_game and get_checker_details methods to make sure board reflects recent move"""
         new_game = Checkers()
         player_1 = new_game.create_player("Connor", "White")
         player_2 = new_game.create_player("Carolynn", "Black")
@@ -37,6 +37,27 @@ class CheckersTests(unittest.TestCase):
         self.assertEqual(new_game.get_checker_details((4, 1)), "Black")
         self.assertEqual(new_game.get_checker_details((5, 0)), None)
 
+    def test_4(self):
+        """Tests that the game is not over if neither player has captures 12 pieces"""
+        new_game = Checkers()
+        player_1 = new_game.create_player("Connor", "White")
+        player_2 = new_game.create_player("Carolynn", "Black")
+        new_game.play_game("Carolynn", (5, 0), (4, 1))
+        self.assertFalse(new_game.game_winner() == "Carolynn")
+        self.assertFalse(new_game.game_winner() == "Connor")
+        self.assertTrue(new_game.game_winner() == "Game has not ended")
+
+
+class PlayerTests(unittest.TestCase):
+    """Contains a unit test for the Player class"""
+
+    def test_5(self):
+        """Tests the get methods for piece color and name"""
+        new_game = Checkers()
+        player_1 = new_game.create_player("Connor", "White")
+        self.assertEqual(player_1.get_player_name(), "Connor")
+        self.assertEqual(player_1.get_player_piece_color(), "White")
+
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()

@@ -109,135 +109,64 @@ class Checkers:
                         if destination_square is None:
                             # assigns current player's piece to king status if they move to the opposite
                             # end of the board
-                            if current_color == "White" and destination_list[0] == 7 or \
-                                    current_color == "Black" and destination_list[0] == 0:
+                            if starting_square == "White" and destination_list[0] == 7 or \
+                                    starting_square == "Black" and destination_list[0] == 0:
                                 self._board[destination_list[0]][
                                     destination_list[1]] = current_color + "_king"
                                 current_player.increase_king_count(1)
+                            if starting_square == "White_king" and destination_list[0] == 0 or \
+                                    starting_square == "Black_king" and destination_list[0] == 7:
+                                self._board[destination_list[0]][
+                                    destination_list[1]] = current_color \
+                                                           + "_Triple_King"
+                                current_player.increase_triple_king_count(1)
                             else:
-                                # assigns current player's piece to tripe king status if they move their king back to
-                                # their original end of the board
-                                if starting_square == "White_king" and destination_list[0] == 0 or \
-                                        starting_square == "Black_king" and destination_list[0] == 7:
+                                # simply moves the current player's king piece without needing to change its status
+                                if starting_square == "White_king" and destination_square is None or \
+                                        starting_square == "Black_king" and destination_square is None:
                                     self._board[destination_list[0]][
-                                        destination_list[1]] = current_color \
-                                                               + "_Triple_King"
-                                    current_player.increase_triple_king_count(1)
-                                else:
-                                    # simply moves the current player's king piece without needing to change its status
-                                    if starting_square == "White_king" and destination_square is None or \
-                                            starting_square == "Black_king" and destination_square is None:
-                                        self._board[destination_list[0]][
-                                            destination_list[1]] = current_color + "_king"
-                                        row_diff = destination_list[0] - starting_list[0]
-                                        col_diff = destination_list[1] - starting_list[1]
-                                        if row_diff < 0:
-                                            row_step = - 1
-                                        else:
-                                            row_step = 1
-                                        if col_diff < 0:
-                                            col_step = -1
-                                        else:
-                                            col_step = 1
-                                        current_row = starting_list[0]
-                                        current_col = starting_list[1]
-                                        while current_row != destination_list[0] and current_col != destination_list[1]:
-                                            if self._board[current_row][current_col] == "Black" or \
-                                                    self._board[current_row][current_col] == "White":
-                                                print(self._board[current_row][current_col])
-                                                current_player.increase_captured_piece_count(1)
-                                            if starting_square != self._board[current_row][current_col] and \
-                                                    (self._board[current_row][current_col] == "Black_king" or
-                                                     self._board[current_row][current_col] == "White_king"):
-                                                print(self._board[current_row][current_col])
-                                                current_player.increase_captured_piece_count(2)
-                                            if self._board[current_row][current_col] == "Black_Triple_King" or \
-                                                    self._board[current_row][current_col] == "White_Triple_King":
-                                                print(self._board[current_row][current_col])
-                                                current_player.increase_captured_piece_count(3)
-                                            self._board[current_row][current_col] = None
-                                            current_row += row_step
-                                            current_col += col_step
-                                    else:  # simply moves the current player's triple king piece without
-                                        # needing to change its status
-                                        if starting_square == "White_Triple_King" and destination_square is None or \
-                                                starting_square == "Black_Triple_King" and destination_square is None:
-                                            self._board[destination_list[0]][
-                                                destination_list[1]] = current_color + "Triple_King"
-                                            row_diff = destination_list[0] - starting_list[0]
-                                            col_diff = destination_list[1] - starting_list[1]
-                                            if row_diff < 0:
-                                                row_step = - 1
-                                            else:
-                                                row_step = 1
-                                            if col_diff < 0:
-                                                col_step = -1
-                                            else:
-                                                col_step = 1
-                                            current_row = starting_list[0]
-                                            current_col = starting_list[1]
-                                            while current_row != destination_list[0] and current_col != \
-                                                    destination_list[1]:
-                                                if (current_color == "Black" and
-                                                    self._board[current_row][current_col] == "White") or \
-                                                        (current_color == "White" and
-                                                         self._board[current_row][current_col] == "Black"):
-                                                    current_player.increase_captured_piece_count(1)
-                                                if (current_color == "Black" and self._board[current_row][
-                                                    current_col] == "White_king") or (current_color == "White" and
-                                                                                      self._board[current_row][
-                                                                                          current_col] == "Black_king"):
-                                                    current_player.increase_captured_piece_count(2)
-                                                if starting_square != self._board[current_row][current_col] and \
-                                                        (current_color == "Black" and self._board[current_row][
-                                                            current_col] == "White_Triple_King") or (
-                                                        current_color == "White" and self._board[current_row][
-                                                        current_col] == "Black_Triple_King"):
-                                                    current_player.increase_captured_piece_count(3)
-                                                self._board[current_row][current_col] = None
-                                                current_row += row_step
-                                                current_col += col_step
-                                        else:  # assumes piece is not a king or triple king and checks to see if it
-                                            # has jumped an opponent's piece in a regular diagonal jump
-                                            if starting_square == "Black" or starting_square == "White":
-                                                row_diff = destination_list[0] - starting_list[0]
-                                                col_diff = destination_list[1] - starting_list[1]
-                                                if row_diff < 0:
-                                                    row_step = - 1
-                                                else:
-                                                    row_step = 1
-                                                if col_diff < 0:
-                                                    col_step = -1
-                                                else:
-                                                    col_step = 1
-                                                current_row = starting_list[0]
-                                                current_col = starting_list[1]
-                                                while current_row != destination_list[0] and current_col != \
-                                                        destination_list[1]:
-                                                    if (current_color == "Black" and
-                                                        self._board[current_row][current_col] == "White") or \
-                                                            (current_color == "White" and
-                                                             self._board[current_row][current_col] == "Black"):
-                                                        current_player.increase_captured_piece_count(1)
-                                                    if (current_color == "Black" and self._board[current_row][
-                                                        current_col] == "White_king") or \
-                                                            (current_color == "White" and
-                                                             self._board[current_row][
-                                                                 current_col] == "Black_king"):
-                                                        current_player.increase_captured_piece_count(2)
-                                                    if starting_square != self._board[current_row][current_col] and \
-                                                            (current_color == "Black" and self._board[current_row][
-                                                                current_col] == "White_Triple_King") or (
-                                                            current_color == "White" and self._board[current_row][
-                                                            current_col] == "Black_Triple_King"):
-                                                        current_player.increase_captured_piece_count(3)
-                                                    self._board[current_row][current_col] = None
-                                                    current_row += row_step
-                                                    current_col += col_step
-                                            self._board[destination_list[0]][
-                                                destination_list[
-                                                    1]] = current_color
-                                            # moves current piece to destination spot on board
+                                        destination_list[1]] = current_color + "_king"
+                            if starting_square == "White_Triple_King" and destination_square is None or \
+                                    starting_square == "Black_Triple_King" and destination_square is None:
+                                self._board[destination_list[0]][
+                                    destination_list[1]] = current_color + "Triple_King"
+                            else:
+                                if starting_square == "Black" or starting_square == "White":
+                                    self._board[destination_list[0]][destination_list[1]] = current_color
+                        row_diff = destination_list[0] - starting_list[0]
+                        col_diff = destination_list[1] - starting_list[1]
+                        if row_diff < 0:
+                            row_step = - 1
+                        else:
+                            row_step = 1
+                        if col_diff < 0:
+                            col_step = -1
+                        else:
+                            col_step = 1
+                        current_row = starting_list[0]
+                        current_col = starting_list[1]
+                        while current_row != destination_list[0] and current_col != \
+                                destination_list[1]:
+                            if (current_color == "Black" and
+                                self._board[current_row][current_col] == "White") or \
+                                    (current_color == "White" and
+                                     self._board[current_row][current_col] == "Black"):
+                                current_player.increase_captured_piece_count(1)
+                            if (current_color == "Black" and self._board[current_row][
+                                current_col] == "White_king") or \
+                                    (current_color == "White" and
+                                     self._board[current_row][
+                                         current_col] == "Black_king"):
+                                current_player.increase_captured_piece_count(2)
+                            if starting_square != self._board[current_row][current_col] and \
+                                    (current_color == "Black" and self._board[current_row][
+                                        current_col] == "White_Triple_King") or (
+                                    current_color == "White" and self._board[current_row][
+                                    current_col] == "Black_Triple_King"):
+                                current_player.increase_captured_piece_count(3)
+                            self._board[current_row][current_col] = None
+                            current_row += row_step
+                            current_col += col_step
                     self._board[starting_list[0]][starting_list[1]] = None
                     # changes current's previous location to None
                     if current_color == "Black":
