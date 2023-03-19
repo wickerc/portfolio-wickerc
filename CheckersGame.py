@@ -109,8 +109,8 @@ class Checkers:
                         if destination_square is None:
                             if starting_square == "White" and destination_list[0] == 7 or \
                                     starting_square == "Black" and destination_list[0] == 0:
-                                self._board[destination_list[0]][
-                                    destination_list[1]] = current_color + "_king"
+                                self._board[destination_list[0]][destination_list[1]] = current_color + "_king"
+                                print(self._board[destination_list[0]][destination_list[1]])
                                 current_player.increase_king_count(1)   # if piece gets to opp. end of board
                             if starting_square == "White_king" and destination_list[0] == 0 or \
                                     starting_square == "Black_king" and destination_list[0] == 7:
@@ -124,13 +124,14 @@ class Checkers:
                                     self._board[destination_list[0]][
                                         destination_list[1]] = current_color + "_king"
                                     # normal king move
-                            if starting_square == "White_Triple_King" or starting_square == "Black_Triple_King":
-                                self._board[destination_list[0]][
-                                    destination_list[1]] = current_color + "Triple_King"
-                                # normal triple king move
-                            else:
-                                if starting_square == "Black" or starting_square == "White":
-                                    self._board[destination_list[0]][destination_list[1]] = current_color
+                                if starting_square == "White_Triple_King" or starting_square == "Black_Triple_King":
+                                    self._board[destination_list[0]][
+                                        destination_list[1]] = current_color + "Triple_King"
+                                    # normal triple king move
+                                else:
+                                    if starting_square == "White" and destination_list[0] < 7 or \
+                                            starting_square == "Black" and destination_list[0] > 0:
+                                        self._board[destination_list[0]][destination_list[1]] = current_color
                                     # normal piece move
                         # the below sequence of code checks to see if there are any captures for the recent move
                         # and adjusts the capture count if so
@@ -158,13 +159,13 @@ class Checkers:
                                     (current_color == "White" and
                                      self._board[current_row][
                                          current_col] == "Black_king"):
-                                current_player.increase_captured_piece_count(2)
+                                current_player.increase_captured_piece_count(1)
                             if starting_square != self._board[current_row][current_col] and \
                                     (current_color == "Black" and self._board[current_row][
                                         current_col] == "White_Triple_King") or (
                                     current_color == "White" and self._board[current_row][
                                     current_col] == "Black_Triple_King"):
-                                current_player.increase_captured_piece_count(3)
+                                current_player.increase_captured_piece_count(1)
                             self._board[current_row][current_col] = None
                             current_row += row_step
                             current_col += col_step
@@ -213,7 +214,7 @@ class Checkers:
         """returns the name of the player who won the game or "Game has not ended" if the game is not over yet"""
         for player in self._player_objects:
             if player.get_captured_pieces_count() == 12:
-                return player.get_player_name
+                return player.get_player_name()
             else:
                 return "Game has not ended"
 
@@ -260,3 +261,4 @@ class Player:
 
     def get_captured_pieces_count(self):
         return self._captured_pieces_count
+
