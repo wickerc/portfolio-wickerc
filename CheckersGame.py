@@ -101,38 +101,39 @@ class Checkers:
                             raise OutofTurn
                         if starting_square == current_color or starting_square == (current_color + "_king") or \
                                 starting_square == (current_color + "_Triple_King"):
-                            pass
+                            pass         # this means the player is attempting to move from a valid square
                         else:
                             raise InvalidSquare
                         if destination_square is not None:
                             raise InvalidSquare
                         if destination_square is None:
-                            # assigns current player's piece to king status if they move to the opposite
-                            # end of the board
                             if starting_square == "White" and destination_list[0] == 7 or \
                                     starting_square == "Black" and destination_list[0] == 0:
                                 self._board[destination_list[0]][
                                     destination_list[1]] = current_color + "_king"
-                                current_player.increase_king_count(1)
+                                current_player.increase_king_count(1)   # if piece gets to opp. end of board
                             if starting_square == "White_king" and destination_list[0] == 0 or \
                                     starting_square == "Black_king" and destination_list[0] == 7:
                                 self._board[destination_list[0]][
                                     destination_list[1]] = current_color \
                                                            + "_Triple_King"
                                 current_player.increase_triple_king_count(1)
+                                # if king returns to original side of board
                             else:
-                                # simply moves the current player's king piece without needing to change its status
-                                if starting_square == "White_king" and destination_square is None or \
-                                        starting_square == "Black_king" and destination_square is None:
+                                if starting_square == "White_king" or starting_square == "Black_king":
                                     self._board[destination_list[0]][
                                         destination_list[1]] = current_color + "_king"
-                            if starting_square == "White_Triple_King" and destination_square is None or \
-                                    starting_square == "Black_Triple_King" and destination_square is None:
+                                    # normal king move
+                            if starting_square == "White_Triple_King" or starting_square == "Black_Triple_King":
                                 self._board[destination_list[0]][
                                     destination_list[1]] = current_color + "Triple_King"
+                                # normal triple king move
                             else:
                                 if starting_square == "Black" or starting_square == "White":
                                     self._board[destination_list[0]][destination_list[1]] = current_color
+                                    # normal piece move
+                        # the below sequence of code checks to see if there are any captures for the recent move
+                        # and adjusts the capture count if so
                         row_diff = destination_list[0] - starting_list[0]
                         col_diff = destination_list[1] - starting_list[1]
                         if row_diff < 0:
@@ -168,7 +169,6 @@ class Checkers:
                             current_row += row_step
                             current_col += col_step
                     self._board[starting_list[0]][starting_list[1]] = None
-                    # changes current's previous location to None
                     if current_color == "Black":
                         for x in self._player_objects:
                             if x.get_player_piece_color() == "White":
@@ -178,7 +178,8 @@ class Checkers:
                             if x.get_player_piece_color() == "Black":
                                 self._players_turn = x.get_player_name()
                     return current_player.get_captured_pieces_count()
-                    # returns the total number of pieces captured by current player
+                    # returns the captured piece count for the player
+                    # who just played
         except OutofTurn:
             print("OutofTurn Error: It is not your turn")
         except InvalidSquare:
