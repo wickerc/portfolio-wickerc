@@ -35,7 +35,7 @@ class CheckersTests(unittest.TestCase):
         player_2 = new_game.create_player("Carolynn", "Black")
         new_game.play_game("Carolynn", (5, 0), (4, 1))
         self.assertEqual(new_game.get_checker_details((4, 1)), "Black")
-
+        self.assertEqual(new_game.get_checker_details((5, 0)), None)
 
 
 if __name__ == '__main__':

@@ -200,31 +200,40 @@ class Checkers:
                                         else:  # assumes piece is not a king or triple king and checks to see if it
                                             # has jumped an opponent's piece in a regular diagonal jump
                                             if starting_square == "Black" or starting_square == "White":
-                                                if (starting_list[0] + destination_list[0]) % 2 == 0 and \
-                                                        (starting_list[1] + destination_list[1]) % 2 == 0:
-                                                    jumped_0 = int((starting_list[0] + destination_list[0]) / 2)
-                                                    jumped_1 = int((starting_list[1] + destination_list[1]) / 2)
-                                                    if (self._board[jumped_0][jumped_1] != current_color) and (
-                                                            self._board[jumped_0][
-                                                                jumped_1] is not None):
-                                                        # checks if jumped piece is the opponent's
-                                                        current_player.increase_captured_piece_count(
-                                                            1)  # increases current's captures piece count by 1
-                                                        if self._board[jumped_0][
-                                                                jumped_1] == "White_king" or "Black_king":
-                                                            # checks if jumped piece is at least a king
-                                                            current_player.increase_captured_piece_count(
-                                                                1)
-                                                            # increases current captures by 1 if above condition met
-                                                            if self._board[jumped_0][
-                                                                jumped_1] == "White_Triple_King" or \
-                                                                    "Black_Triple_King":
-                                                                # checks if jumped piece is a triple king
-                                                                current_player.increase_captured_piece_count(
-                                                                    1)  # increases current captures by 3 for a total
-                                                                # of 3 captures in one move if above condition is met
-                                                    self._board[jumped_0][
-                                                        jumped_1] = None  # sets jumped location to None
+                                                row_diff = destination_list[0] - starting_list[0]
+                                                col_diff = destination_list[1] - starting_list[1]
+                                                if row_diff < 0:
+                                                    row_step = - 1
+                                                else:
+                                                    row_step = 1
+                                                if col_diff < 0:
+                                                    col_step = -1
+                                                else:
+                                                    col_step = 1
+                                                current_row = starting_list[0]
+                                                current_col = starting_list[1]
+                                                while current_row != destination_list[0] and current_col != \
+                                                        destination_list[1]:
+                                                    if (current_color == "Black" and
+                                                        self._board[current_row][current_col] == "White") or \
+                                                            (current_color == "White" and
+                                                             self._board[current_row][current_col] == "Black"):
+                                                        current_player.increase_captured_piece_count(1)
+                                                    if (current_color == "Black" and self._board[current_row][
+                                                        current_col] == "White_king") or \
+                                                            (current_color == "White" and
+                                                             self._board[current_row][
+                                                                 current_col] == "Black_king"):
+                                                        current_player.increase_captured_piece_count(2)
+                                                    if starting_square != self._board[current_row][current_col] and \
+                                                            (current_color == "Black" and self._board[current_row][
+                                                                current_col] == "White_Triple_King") or (
+                                                            current_color == "White" and self._board[current_row][
+                                                            current_col] == "Black_Triple_King"):
+                                                        current_player.increase_captured_piece_count(3)
+                                                    self._board[current_row][current_col] = None
+                                                    current_row += row_step
+                                                    current_col += col_step
                                             self._board[destination_list[0]][
                                                 destination_list[
                                                     1]] = current_color
@@ -321,6 +330,3 @@ class Player:
 
     def get_captured_pieces_count(self):
         return self._captured_pieces_count
-
-
-
